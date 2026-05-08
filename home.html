@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Reef Enterprise | Premium Arabic Perfumes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;500&family=Didact+Gothic&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-dim: #7a5f2a;
+            --black: #050505;
+            --dark: #0d0d0d;
+            --dark-2: #141414;
+            --dark-3: #1c1a17;
+            --white: #f5f0e8;
+            --white-dim: rgba(245, 240, 232, 0.55);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* ─── CUSTOM CURSOR ─── */
+        .cursor-dot {
+            position: fixed;
+            width: 6px; height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 30px; height: 30px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.15s ease, width 0.2s, height 0.2s;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            z-index: 1000;
+            padding: 24px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+            backdrop-filter: blur(2px);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .nav-logo span {
+            display: block;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 6px;
+            color: var(--white-dim);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white-dim);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* ─── HERO ─── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, #1a1408 0%, #050505 65%);
+        }
+
+        /* Animated gold particles */
+        .particles {
+            position: absolute; inset: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: float linear infinite;
+            opacity: 0;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(30px); opacity: 0; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 8%;
+            max-width: 620px;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 8px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.3s;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 1;
+            color: var(--white);
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.5s;
+        }
+        .hero-title .gold-italic {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--white-dim);
+            letter-spacing: 1px;
+            margin: 20px 0 40px;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.7s;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.9s;
+        }
+
+        .btn-primary {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 18px 40px;
+            background: var(--gold);
+            color: var(--black);
+            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: var(--gold-light);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover::before { transform: translateX(0); }
+        .btn-primary span { position: relative; z-index: 1; }
+
+        .btn-ghost {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--white-dim);
+            border-bottom: 1px solid var(--gold-dim);
+            padding-bottom: 4px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .btn-ghost:hover { color: var(--gold); border-color: var(--gold); }
+
+        /* Hero right — floating bottle mockup */
+        .hero-visual {
+            position: absolute;
+            right: 6%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards 0.6s;
+        }
+        .hero-glow {
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; }
+        }
+        .hero-bottle-img {
+            width: 280px;
+            height: 380px;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 20px 60px rgba(201,168,76,0.25));
+            animation: levitate 6s ease-in-out infinite;
+        }
+        @keyframes levitate {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ─── MARQUEE STRIP ─── */
+        .marquee-strip {
+            background: var(--gold);
+            padding: 14px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-inner {
+            display: inline-flex;
+            animation: marquee 20s linear infinite;
+            gap: 0;
+        }
+        .marquee-item {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--black);
+            padding: 0 40px;
+        }
+        .marquee-dot {
+            color: var(--black);
+            opacity: 0.4;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ─── INFO BAR ─── */
+        .info-bar {
+            background: var(--dark-2);
+            border-top: 1px solid rgba(201,168,76,0.12);
+            border-bottom: 1px solid rgba(201,168,76,0.12);
+            padding: 28px 8%;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .info-icon {
+            width: 38px; height: 38px;
+            border: 1px solid var(--gold-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+        .info-text-label {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+        }
+        .info-text-value {
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-top: 2px;
+        }
+
+        /* ─── SECTION HEADERS ─── */
+        .section {
+            padding: 100px 8%;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+        .section-eyebrow {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.15;
+        }
+        .section-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .section-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin: 24px auto 0;
+        }
+
+        /* ─── PRODUCT GRID ─── */
+        .products-bg { background: var(--dark-3); }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2px;
+        }
+
+        .product-card {
+            background: var(--dark-2);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .product-card:hover { background: #1a180e; }
+
+        .product-card-img {
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(0.8) brightness(0.85);
+            transition: transform 0.6s ease, filter 0.4s;
+        }
+        .product-card:hover .product-card-img img {
+            transform: scale(1.06);
+            filter: saturate(1) brightness(0.95);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 16px; left: 16px;
+            background: var(--gold);
+            color: var(--black);
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+        }
+
+        .product-card-body {
+            padding: 28px 24px 32px;
+            border-top: 1px solid rgba(201,168,76,0.08);
+        }
+        .product-cat {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .product-note {
+            font-size: 0.9rem;
+            color: var(--white-dim);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .product-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .product-price sub {
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: var(--white-dim);
+            vertical-align: super;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .btn-order {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 13px 22px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-order:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        /* ─── FEATURED BANNER ─── */
+        .featured-banner {
+            position: relative;
+            min-height: 520px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+        .featured-left {
+            background: var(--dark-2);
+            padding: 80px 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        .featured-right {
+            position: relative;
+            overflow: hidden;
+        }
+        .featured-right img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) saturate(0.7);
+        }
+        .featured-right::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, var(--dark-2) 0%, transparent 40%);
+        }
+        .featured-tag {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .featured-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            line-height: 1.1;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+        .featured-desc {
+            color: var(--white-dim);
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 400px;
+            margin-bottom: 36px;
+        }
+        .featured-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 36px;
+        }
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: block;
+        }
+        .stat-label {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white-dim);
+        }
+
+        /* ─── WHOLESALE CTA ─── */
+        .wholesale-cta {
+            background: linear-gradient(135deg, #0f0e09 0%, #1a1408 50%, #0f0e09 100%);
+            border-top: 1px solid rgba(201,168,76,0.15);
+            border-bottom: 1px solid rgba(201,168,76,0.15);
+            padding: 80px 8%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .wholesale-left h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--white);
+        }
+        .wholesale-left h2 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .wholesale-left p {
+            color: var(--white-dim);
+            margin-top: 14px;
+            font-size: 1rem;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+        .wholesale-right {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 260px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border: 1px solid rgba(201,168,76,0.18);
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+        .contact-item:hover {
+            border-color: var(--gold);
+            background: rgba(201,168,76,0.04);
+        }
+        .contact-platform {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+        .contact-handle {
+            font-size: 0.9rem;
+            color: var(--white);
+            margin-top: 2px;
+        }
+        .contact-icon {
+            font-size: 1.3rem;
+            color: var(--gold);
+            width: 36px;
+            flex-shrink: 0;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: #030303;
+            padding: 60px 8% 30px;
+            border-top: 1px solid rgba(201,168,76,0.1);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+            padding-bottom: 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+        }
+        .footer-brand-desc {
+            color: var(--white-dim);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            max-width: 300px;
+        }
+        .footer-col h4 {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 22px;
+        }
+        .footer-col p, .footer-col a {
+            font-size: 0.9rem;
+            color: var(--white-dim);
+            line-height: 2.1;
+            text-decoration: none;
+            display: block;
+            transition: color 0.2s;
+        }
+        .footer-col a:hover { color: var(--gold); }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            font-size: 0.78rem;
+            color: rgba(245,240,232,0.25);
+            font-family: 'Didact Gothic', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* ─── SCROLL LINE ─── */
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            background: var(--gold);
+            z-index: 9999;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .hero-visual { display: none; }
+            .featured-banner { grid-template-columns: 1fr; }
+            .featured-right { height: 300px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .wholesale-cta { flex-direction: column; }
+            .nav-links { display: none; }
+            .info-bar { gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ── NAV ── -->
+<nav>
+    <div class="nav-logo">
+        Al Reef
+        <span>Kamwala · Lusaka · Zambia</span>
+    </div>
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#wholesale">Wholesale</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+    <div class="hero-bg"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="hero-content">
+        <p class="hero-eyebrow">Official Distributors · Zambia</p>
+        <h1 class="hero-title">
+            Essence of<br>
+            <span class="gold-italic">Arabia</span>
+        </h1>
+        <p class="hero-sub">
+            Premium Arabic perfumes & cosmetics.<br>
+            Wholesale &amp; retail — based in Kamwala, Lusaka.
+        </p>
+        <div class="hero-cta">
+            <a href="#collection" class="btn-primary"><span>View Collection</span></a>
+            <a href="https://wa.me/260974333332" target="_blank" class="btn-ghost">Order via WhatsApp</a>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <img class="hero-bottle-img"
+             src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400"
+             alt="Arabic Perfume">
+    </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-strip">
+    <div class="marquee-inner" id="marqueeInner"></div>
+</div>
+
+<!-- ── INFO BAR ── -->
+<div class="info-bar">
+    <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+            <div class="info-text-label">Location</div>
+            <div class="info-text-value">Kamwala, Lusaka</div>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div>
+            <div class="info-text-label">Open</div>
+            <div class="info-text-value">Mon – Sat</div>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+            <div class="info-text-label">Phone / WhatsApp</div>
+            <div class="info-text-value">+260 974 333 332</div>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">📦</div>
+        <div>
+            <div class="info-text-label">Service</div>
+            <div class="info-text-value">Retail &amp; Wholesale</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── COLLECTION ── -->
+<section class="section products-bg" id="collection">
+    <div class="section-header">
+        <p class="section-eyebrow">Our Catalogue</p>
+        <h2 class="section-title">Featured <em>Collection</em></h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- ── FEATURED BANNER ── -->
+<div class="featured-banner">
+    <div class="featured-left">
+        <p class="featured-tag">Why Choose Al Reef</p>
+        <h2 class="featured-title">Authentic.<br>Luxurious.<br>Zambian.</h2>
+        <p class="featured-desc">
+            We import directly from the finest Arabian perfume houses —
+            including Lattafa — so every bottle you receive is 100% original,
+            rich, and long-lasting.
+        </p>
+        <div class="featured-stats">
+            <div>
+                <span class="stat-num">100+</span>
+                <span class="stat-label">Scents in Stock</span>
+            </div>
+            <div>
+                <span class="stat-num">6+</span>
+                <span class="stat-label">Bottle Bulk Deals</span>
+            </div>
+            <div>
+                <span class="stat-num">ZMW</span>
+                <span class="stat-label">Local Prices</span>
+            </div>
+        </div>
+        <a href="https://wa.me/260974333332" class="btn-primary" target="_blank"><span>Order Now</span></a>
+    </div>
+    <div class="featured-right">
+        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800" alt="Luxury Perfumes">
+    </div>
+</div>
+
+<!-- ── WHOLESALE CTA ── -->
+<section class="wholesale-cta" id="wholesale">
+    <div class="wholesale-left">
+        <h2>Bulk Orders &amp;<br><em>Wholesale Deals</em></h2>
+        <p>
+            Are you a retailer or reseller? Al Reef Enterprise offers unbeatable
+            wholesale prices on Lattafa, Confetti, and premium Arabic scents.
+            Message us directly to get the latest wholesale price list.
+        </p>
+    </div>
+    <div class="wholesale-right" id="contact">
+        <a href="https://wa.me/260974333332" target="_blank" class="contact-item">
+            <span class="contact-icon">💬</span>
+            <div>
+                <div class="contact-platform">WhatsApp</div>
+                <div class="contact-handle">+260 974 333 332</div>
+            </div>
+        </a>
+        <a href="https://www.tiktok.com/@alreef.cosmetics" target="_blank" class="contact-item">
+            <span class="contact-icon">📱</span>
+            <div>
+                <div class="contact-platform">TikTok</div>
+                <div class="contact-handle">@alreef.cosmetics</div>
+            </div>
+        </a>
+        <a href="tel:+260974333332" class="contact-item">
+            <span class="contact-icon">📞</span>
+            <div>
+                <div class="contact-platform">Call Us</div>
+                <div class="contact-handle">+260 974 333 332</div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-grid">
+        <div>
+            <div class="footer-brand-name">Al Reef Enterprise</div>
+            <p class="footer-brand-desc">
+                Your home for original Arabic perfumes and premium cosmetics in Zambia.
+                Serving Lusaka with authentic scents since day one.
+            </p>
+        </div>
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <a href="#collection">Our Collection</a>
+            <a href="#wholesale">Wholesale</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+            <h4>Find Us</h4>
+            <p>Kamwala Market, Lusaka</p>
+            <p>Monday – Saturday</p>
+            <p>+260 974 333 332</p>
+            <a href="https://www.tiktok.com/@alreef.cosmetics">@alreef.cosmetics</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Al Reef Enterprise Kamwala · All Rights Reserved</p>
+</footer>
+
+<script>
+    // ─── Cursor ───
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx - 3 + 'px';
+        dot.style.top = my - 3 + 'px';
+    });
+    function animRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx - 15 + 'px';
+        ring.style.top = ry - 15 + 'px';
+        requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // ─── Scroll Progress ───
+    window.addEventListener('scroll', () => {
+        const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+        document.getElementById('scrollProgress').style.width = pct + '%';
+    });
+
+    // ─── Particles ───
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (6 + Math.random() * 10) + 's';
+        p.style.animationDelay = (Math.random() * 8) + 's';
+        p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
+        particleContainer.appendChild(p);
+    }
+
+    // ─── Marquee ───
+    const items = ['LATTAFA', 'ARABIC OUD', 'CONFETTI', 'PREMIUM SCENTS', 'WHOLESALE DEALS', 'KAMWALA LUSAKA', 'AUTHENTIC IMPORTS', 'LUXURY FRAGRANCES'];
+    const mi = document.getElementById('marqueeInner');
+    let txt = '';
+    for (let r = 0; r < 3; r++) items.forEach(item => {
+        txt += `<span class="marquee-item">${item}</span><span class="marquee-dot">✦</span>`;
+    });
+    mi.innerHTML = txt;
+
+    // ─── Products ───
+    const products = [
+        {
+            name: "Lattafa Collection",
+            cat: "Arabic Perfume",
+            price: "K327",
+            sub: "for 6-bottle deal",
+            note: "Iconic Arabic house — rich oud, musk & amber notes. Best seller.",
+            badge: "Top Seller",
+            img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=500"
+        },
+        {
+            name: "Confetti Perfumes",
+            cat: "Cosmetics Line",
+            price: "K210",
+            sub: "special offer",
+            note: "Bright, playful fragrances for everyday wear. Light & long-lasting.",
+            badge: "New Arrival",
+            img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=500"
+        },
+        {
+            name: "Wholesale Pack",
+            cat: "Bulk Retail",
+            price: "K1,012",
+            sub: "6-bottle bundle",
+            note: "Best value for resellers. Mix and match from our full catalog.",
+            badge: "Wholesale",
+            img: "https://images.unsplash.com/photo-1615033533054-e03a9732c484?auto=format&fit=crop&q=80&w=500"
+        },
+        {
+            name: "Arabic Musk",
+            cat: "Premium Import",
+            price: "Ask for Price",
+            sub: "authentic import",
+            note: "Deep, sensual musk — exclusively sourced from Arabian perfumeries.",
+            badge: "Trending",
+            img: "https://images.unsplash.com/photo-1563170351-be82bc888bb4?auto=format&fit=crop&q=80&w=500"
+        },
+        {
+            name: "Oud Royal",
+            cat: "Signature Scent",
+            price: "K189",
+            sub: "per bottle",
+            note: "Majestic oud with woody base notes. A timeless Arabic classic.",
+            badge: "Limited",
+            img: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=500"
+        },
+        {
+            name: "Rose & Amber",
+            cat: "For Her",
+            price: "K165",
+            sub: "per bottle",
+            note: "Feminine floral with warm amber finish. Elegant and long-lasting.",
+            badge: "Best Value",
+            img: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=500"
+        }
+    ];
+
+    const grid = document.getElementById('productGrid');
+    products.forEach(p => {
+        const phone = '260974333332';
+        const msg = encodeURIComponent(`Hi Al Reef! I'm interested in ordering: ${p.name} (${p.price}). Please confirm availability.`);
+        const link = `https://wa.me/${phone}?text=${msg}`;
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="product-card-img">
+                <span class="product-badge">${p.badge}</span>
+                <img src="${p.img}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="product-card-body">
+                <p class="product-cat">${p.cat}</p>
+                <h3 class="product-name">${p.name}</h3>
+                <p class="product-note">${p.note}</p>
+                <div class="product-footer">
+                    <div class="product-price">${p.price}<sub>${p.sub}</sub></div>
+                    <a href="${link}" target="_blank" class="btn-order">Order via WhatsApp</a>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+</script>
+</body>
+</html>

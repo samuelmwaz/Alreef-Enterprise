@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Al Reef Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:#7a5f2a;
+  --green:#22c55e; --red:#ef4444; --blue:#3b82f6;
+  --radius:12px; --transition:0.3s ease;
+}
+[data-theme="dark"] {
+  --bg:#080706; --bg-2:#111009; --bg-3:#18160f;
+  --surface:#1c1a12; --surface-2:#232017;
+  --border:rgba(201,168,76,0.15); --border-2:rgba(201,168,76,0.08);
+  --text:#f0ead8; --text-dim:rgba(240,234,216,0.5); --text-muted:rgba(240,234,216,0.28);
+  --nav-bg:rgba(8,7,6,0.95); --input-bg:#131108; --shadow:0 4px 24px rgba(0,0,0,0.6);
+  --toggle-bg:#2a2510;
+}
+[data-theme="light"] {
+  --bg:#faf8f3; --bg-2:#f3efe4; --bg-3:#ede9dc;
+  --surface:#ffffff; --surface-2:#f8f5ee;
+  --border:rgba(180,140,60,0.18); --border-2:rgba(180,140,60,0.09);
+  --text:#1a1611; --text-dim:rgba(26,22,17,0.55); --text-muted:rgba(26,22,17,0.32);
+  --nav-bg:rgba(250,248,243,0.96); --input-bg:#f3efe4; --shadow:0 4px 24px rgba(0,0,0,0.07);
+  --toggle-bg:#e8e0cc;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;transition:background var(--transition),color var(--transition);}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+
+/* ── LOGIN OVERLAY ── */
+#loginOverlay{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.login-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:40px 32px;width:100%;max-width:360px;
+  box-shadow:var(--shadow);text-align:center;
+}
+.login-logo{
+  font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;
+  color:var(--gold);letter-spacing:3px;margin-bottom:6px;
+}
+.login-sub{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:30px;}
+.login-err{color:var(--red);font-size:0.78rem;margin-bottom:14px;min-height:20px;}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  height:60px;padding:0 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--nav-bg);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  transition:background var(--transition);
+}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:var(--gold);letter-spacing:2px;}
+.nav-logo small{font-family:'Inter',sans-serif;font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);display:block;margin-top:2px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+.theme-toggle{
+  width:50px;height:26px;background:var(--toggle-bg);border:1px solid var(--border);
+  border-radius:100px;cursor:pointer;position:relative;display:flex;align-items:center;
+  padding:0 5px;justify-content:space-between;
+}
+.tog-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--gold);transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+[data-theme="light"] .tog-knob{transform:translateX(23px);}
+.tog-icon{font-size:9px;}
+
+.nav-btn{
+  font-size:0.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 14px;border-radius:6px;border:1px solid var(--border);
+  background:transparent;color:var(--text-dim);cursor:pointer;transition:all 0.2s;
+}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold);}
+.nav-btn.danger:hover{border-color:var(--red);color:var(--red);}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:960px;margin:0 auto;padding:32px 20px 80px;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;margin-bottom:28px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.tab{
+  flex:1;padding:10px 8px;text-align:center;border-radius:7px;cursor:pointer;
+  font-size:0.66rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-dim);transition:all 0.2s;border:none;background:transparent;
+}
+.tab.active{background:var(--gold);color:#050505;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);transition:background var(--transition);}
+.card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.card-title .icon{font-size:1.2rem;}
+
+/* ── FORM ELEMENTS ── */
+.form-row{margin-bottom:16px;}
+.form-row label{display:block;font-size:0.6rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;}
+.form-row input,.form-row textarea,.form-row select{
+  width:100%;padding:12px 14px;
+  background:var(--input-bg);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:0.88rem;
+  transition:border-color 0.2s,background var(--transition);outline:none;
+}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:var(--gold);}
+.form-row textarea{resize:vertical;min-height:80px;}
+.form-row select option{background:var(--bg-2);}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr;}}
+
+/* Image upload */
+.img-upload-zone{
+  border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;
+  cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative;
+  background:var(--input-bg);
+}
+.img-upload-zone:hover,.img-upload-zone.dragover{border-color:var(--gold);background:rgba(201,168,76,0.04);}
+.img-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:2rem;margin-bottom:8px;}
+.upload-label{font-size:0.75rem;color:var(--text-dim);line-height:1.6;}
+.upload-label strong{color:var(--gold);}
+.img-preview{margin-top:14px;display:none;}
+.img-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--border);}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:13px 22px;border-radius:8px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;transition:all 0.2s;
+  -webkit-appearance:none;
+}
+.btn-gold{background:var(--gold);color:#050505;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-gold:active{transform:scale(0.97);}
+.btn-outline{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);}
+.btn-red:hover{background:rgba(239,68,68,0.2);}
+.btn-full{width:100%;}
+.btn-sm{padding:8px 14px;font-size:0.58rem;letter-spacing:2px;}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--green);color:#fff;font-size:0.78rem;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;padding:12px 24px;border-radius:8px;
+  z-index:9000;transition:transform 0.35s cubic-bezier(.4,0,.2,1);white-space:nowrap;
+  pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.error{background:var(--red);}
+
+/* ── POSTS LIST ── */
+.posts-list{display:flex;flex-direction:column;gap:12px;}
+.post-item{
+  background:var(--surface-2);border:1px solid var(--border-2);border-radius:10px;
+  padding:16px;display:flex;gap:14px;align-items:flex-start;
+  transition:background var(--transition);
+}
+.post-img{width:72px;height:72px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
+.post-img-placeholder{width:72px;height:72px;border-radius:8px;background:var(--bg-3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:1px solid var(--border);}
+.post-body{flex:1;min-width:0;}
+.post-type-badge{
+  display:inline-block;font-size:0.5rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;margin-bottom:5px;
+}
+.badge-product{background:rgba(201,168,76,0.15);color:var(--gold);}
+.badge-discount{background:rgba(239,68,68,0.12);color:var(--red);}
+.badge-announcement{background:rgba(59,130,246,0.12);color:var(--blue);}
+.post-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.post-meta{font-size:0.72rem;color:var(--text-dim);line-height:1.5;}
+.post-price{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-top:4px;}
+.post-actions{display:flex;gap:6px;margin-top:8px;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;}
+.stat-box .num{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--gold);}
+.stat-box .lbl{font-size:0.54rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+
+/* Discount badge preview */
+.discount-preview{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+  border-radius:8px;padding:8px 14px;margin-top:10px;
+}
+.discount-pct{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--red);}
+.discount-off{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
+
+/* Section header in tabs */
+.section-head{margin-bottom:20px;}
+.section-head h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--text);}
+.section-head p{font-size:0.8rem;color:var(--text-dim);margin-top:4px;}
+
+/* Empty state */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-state .e-icon{font-size:2.5rem;margin-bottom:12px;}
+.empty-state p{font-size:0.85rem;}
+
+/* Confirm modal */
+#confirmModal{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0.7);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+#confirmModal.open{display:flex;}
+.confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px;max-width:320px;width:100%;text-align:center;}
+.confirm-box h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:10px;}
+.confirm-box p{font-size:0.82rem;color:var(--text-dim);margin-bottom:22px;line-height:1.6;}
+.confirm-btns{display:flex;gap:10px;}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ── -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">Al Reef</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="login-err" id="loginErr"></div>
+    <div class="form-row"><label>Username</label><input type="text" id="loginUser" placeholder="admin" autocomplete="username"></div>
+    <div class="form-row"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn btn-gold btn-full" onclick="doLogin()" style="margin-top:8px;">Enter Admin Panel</button>
+  </div>
+</div>
+
+<!-- ── CONFIRM MODAL ── -->
+<div id="confirmModal">
+  <div class="confirm-box">
+    <h3>Delete Post?</h3>
+    <p>This will permanently remove the post from the shop. Customers will no longer see it.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-outline btn-full" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-red btn-full" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">Al Reef <small>Admin Dashboard</small></div>
+  <div class="nav-right">
+    <a href="shop.html" class="nav-btn" target="_blank">View Shop ↗</a>
+    <button class="theme-toggle" id="themeToggle">
+      <span class="tog-icon">🌙</span>
+      <div class="tog-knob"></div>
+      <span class="tog-icon">☀️</span>
+    </button>
+    <button class="nav-btn danger" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="page-wrap" id="mainContent" style="display:none;">
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Total Posts</div></div>
+    <div class="stat-box"><div class="num" id="statProducts">0</div><div class="lbl">Products</div></div>
+    <div class="stat-box"><div class="num" id="statDiscounts">0</div><div class="lbl">Discounts</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('add',this)">➕ Add Post</button>
+    <button class="tab" onclick="switchTab('manage',this)">📋 Manage</button>
+  </div>
+
+  <!-- ── ADD TAB ── -->
+  <div id="tab-add">
+
+    <!-- Type selector -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📌</span> Post Type</div>
+      <div class="form-grid">
+        <label style="cursor:pointer;">
+          <input type="radio" name="postType" value="product" checked style="margin-right:8px;accent-color:var(--gold);">
+          <span style="font-size:0.85rem;font-weight:600;">🧴 New Product</span>
+        </label>
+        <label style="cursor:pointer;">
+          <input type="radio" name="postType" value="discount" style="margin-right:8px;accent-color:var(--red);">
+          <span style="font-size:0.85rem;font-weight:600;">🔥 Discount</span>
+        </label>
+        <label style="cursor:pointer;">
+          <input type="radio" name="postType" value="announcement" style="margin-right:8px;accent-color:var(--blue);">
+          <span style="font-size:0.85rem;font-weight:600;">📣 Announcement</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Product fields -->
+    <div class="card" id="productFields">
+      <div class="card-title"><span class="icon">🧴</span> Product Details</div>
+      <div class="form-row"><label>Product Name *</label><input type="text" id="pName" placeholder="e.g. Lattafa Oud Mood"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Category</label>
+          <select id="pCat">
+            <option>Arabic Perfume</option><option>Oud Collection</option><option>Musk</option>
+            <option>For Her</option><option>For Him</option><option>Unisex</option>
+            <option>Cosmetics</option><option>Wholesale Pack</option><option>Limited Edition</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Badge</label>
+          <select id="pBadge">
+            <option>New Arrival</option><option>Top Seller</option><option>Trending</option>
+            <option>Limited</option><option>Best Value</option><option>Wholesale</option><option>Sale</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Price (K) *</label><input type="text" id="pPrice" placeholder="e.g. K189"></div>
+        <div class="form-row"><label>Price Note</label><input type="text" id="pSub" placeholder="e.g. per bottle"></div>
+      </div>
+      <div class="form-row"><label>Description</label><textarea id="pNote" placeholder="Brief description of the scent..."></textarea></div>
+    </div>
+
+    <!-- Discount fields -->
+    <div class="card" id="discountFields" style="display:none;">
+      <div class="card-title"><span class="icon">🔥</span> Discount Details</div>
+      <div class="form-row"><label>Discount Title *</label><input type="text" id="dTitle" placeholder="e.g. Weekend Special – Lattafa"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Discount % *</label><input type="number" id="dPct" placeholder="e.g. 20" min="1" max="99" oninput="updateDiscountPreview()"></div>
+        <div class="form-row"><label>Original Price</label><input type="text" id="dOrigPrice" placeholder="e.g. K210"></div>
+      </div>
+      <div class="form-row"><label>New Price After Discount</label><input type="text" id="dNewPrice" placeholder="e.g. K168"></div>
+      <div id="discountPreview" style="display:none;" class="discount-preview">
+        <span class="discount-pct" id="dPreviewPct">20%</span>
+        <span class="discount-off">OFF — Limited Time</span>
+      </div>
+      <div class="form-row" style="margin-top:14px;"><label>Details / Terms</label><textarea id="dNote" placeholder="What's included in this deal?"></textarea></div>
+    </div>
+
+    <!-- Announcement fields -->
+    <div class="card" id="announcementFields" style="display:none;">
+      <div class="card-title"><span class="icon">📣</span> Announcement</div>
+      <div class="form-row"><label>Title *</label><input type="text" id="aTitle" placeholder="e.g. New Stock Just Arrived!"></div>
+      <div class="form-row"><label>Message *</label><textarea id="aMsg" placeholder="What do you want customers to know?" style="min-height:100px;"></textarea></div>
+    </div>
+
+    <!-- Photo upload (shared) -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📸</span> Photo</div>
+      <div class="img-upload-zone" id="uploadZone">
+        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
+        <div class="upload-icon">📷</div>
+        <div class="upload-label"><strong>Tap to upload a photo</strong><br>JPG, PNG, WEBP supported</div>
+      </div>
+      <div class="img-preview" id="imgPreview"><img id="previewImg" src="" alt="Preview"></div>
+    </div>
+
+    <button class="btn btn-gold btn-full" onclick="submitPost()">✅ Publish to Shop</button>
+  </div>
+
+  <!-- ── MANAGE TAB ── -->
+  <div id="tab-manage" style="display:none;">
+    <div class="section-head">
+      <h2>Published Posts</h2>
+      <p>All items currently visible in the customer shop</p>
+    </div>
+    <div class="posts-list" id="postsList"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════
+   STORAGE HELPERS (localStorage)
+════════════════════════════════ */
+const STORE_KEY = 'alreef_posts';
+
+function getPosts() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+  catch(e) { return []; }
+}
+function savePosts(posts) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(posts));
+}
+
+/* ════════════════════════════════
+   AUTH
+════════════════════════════════ */
+const ADMIN_USER = 'alreef';
+const ADMIN_PASS = 'admin123';
+
+window.addEventListener('DOMContentLoaded', () => {
+  const html = document.documentElement;
+  const saved = localStorage.getItem('alreef-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+
+  if (localStorage.getItem('alreef_logged_in') === 'yes') {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    refreshStats();
+  }
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('alreef-theme', next);
+  });
+
+  // Radio type change
+  document.querySelectorAll('input[name="postType"]').forEach(r => r.addEventListener('change', updateTypeFields));
+
+  // Photo drag
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) readPhotoFile(file);
+  });
+});
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    localStorage.setItem('alreef_logged_in', 'yes');
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    refreshStats();
+  } else {
+    err.textContent = 'Incorrect username or password.';
+    document.getElementById('loginPass').value = '';
+  }
+}
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function logout() {
+  localStorage.removeItem('alreef_logged_in');
+  location.reload();
+}
+
+/* ════════════════════════════════
+   TABS
+════════════════════════════════ */
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-add').style.display = tab === 'add' ? 'block' : 'none';
+  document.getElementById('tab-manage').style.display = tab === 'manage' ? 'block' : 'none';
+  if (tab === 'manage') renderPostsList();
+}
+
+/* ════════════════════════════════
+   TYPE FIELDS TOGGLE
+════════════════════════════════ */
+function updateTypeFields() {
+  const t = document.querySelector('input[name="postType"]:checked').value;
+  document.getElementById('productFields').style.display      = t === 'product'      ? 'block' : 'none';
+  document.getElementById('discountFields').style.display     = t === 'discount'     ? 'block' : 'none';
+  document.getElementById('announcementFields').style.display = t === 'announcement' ? 'block' : 'none';
+}
+
+function updateDiscountPreview() {
+  const v = document.getElementById('dPct').value;
+  const preview = document.getElementById('discountPreview');
+  if (v && v > 0) {
+    preview.style.display = 'inline-flex';
+    document.getElementById('dPreviewPct').textContent = v + '%';
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+/* ════════════════════════════════
+   PHOTO UPLOAD
+════════════════════════════════ */
+let currentPhotoData = null;
+
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (file) readPhotoFile(file);
+}
+
+function readPhotoFile(file) {
+  if (!file.type.startsWith('image/')) { showToast('Please select an image file.', true); return; }
+  if (file.size > 4 * 1024 * 1024) { showToast('Image too large (max 4MB).', true); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentPhotoData = e.target.result;
+    const preview = document.getElementById('imgPreview');
+    const img = document.getElementById('previewImg');
+    img.src = currentPhotoData;
+    preview.style.display = 'block';
+    document.querySelector('.upload-label').innerHTML = '<strong style="color:var(--green)">✓ Photo ready</strong><br>Tap to change';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ════════════════════════════════
+   SUBMIT
+════════════════════════════════ */
+function submitPost() {
+  const type = document.querySelector('input[name="postType"]:checked').value;
+  let post = { id: Date.now().toString(), type, photo: currentPhotoData, createdAt: new Date().toISOString() };
+
+  if (type === 'product') {
+    const name = document.getElementById('pName').value.trim();
+    const price = document.getElementById('pPrice').value.trim();
+    if (!name || !price) { showToast('Name and price are required.', true); return; }
+    post.name    = name;
+    post.cat     = document.getElementById('pCat').value;
+    post.badge   = document.getElementById('pBadge').value;
+    post.price   = price;
+    post.sub     = document.getElementById('pSub').value.trim() || 'per bottle';
+    post.note    = document.getElementById('pNote').value.trim() || '';
+
+  } else if (type === 'discount') {
+    const title = document.getElementById('dTitle').value.trim();
+    const pct   = document.getElementById('dPct').value.trim();
+    if (!title || !pct) { showToast('Title and discount % are required.', true); return; }
+    post.name      = title;
+    post.pct       = pct;
+    post.origPrice = document.getElementById('dOrigPrice').value.trim();
+    post.newPrice  = document.getElementById('dNewPrice').value.trim();
+    post.note      = document.getElementById('dNote').value.trim();
+
+  } else if (type === 'announcement') {
+    const title = document.getElementById('aTitle').value.trim();
+    const msg   = document.getElementById('aMsg').value.trim();
+    if (!title || !msg) { showToast('Title and message are required.', true); return; }
+    post.name = title;
+    post.note = msg;
+  }
+
+  const posts = getPosts();
+  posts.unshift(post);
+  savePosts(posts);
+  showToast('✅ Post published to shop!');
+  resetForm();
+  refreshStats();
+}
+
+function resetForm() {
+  ['pName','pPrice','pSub','pNote','dTitle','dPct','dOrigPrice','dNewPrice','dNote','aTitle','aMsg'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.querySelector('input[name="postType"][value="product"]').checked = true;
+  updateTypeFields();
+  currentPhotoData = null;
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('photoInput').value = '';
+  document.querySelector('.upload-label').innerHTML = '<strong>Tap to upload a photo</strong><br>JPG, PNG, WEBP supported';
+  document.getElementById('discountPreview').style.display = 'none';
+}
+
+/* ════════════════════════════════
+   MANAGE / DELETE
+════════════════════════════════ */
+let pendingDeleteId = null;
+
+function renderPostsList() {
+  const posts = getPosts();
+  const container = document.getElementById('postsList');
+  if (!posts.length) {
+    container.innerHTML = '<div class="empty-state"><div class="e-icon">📭</div><p>No posts yet. Go to Add Post to publish your first item.</p></div>';
+    return;
+  }
+  container.innerHTML = posts.map(p => {
+    const date = new Date(p.createdAt).toLocaleDateString('en-ZM',{day:'numeric',month:'short',year:'numeric'});
+    const imgEl = p.photo
+      ? `<img class="post-img" src="${p.photo}" alt="${p.name}">`
+      : `<div class="post-img-placeholder">${p.type==='product'?'🧴':p.type==='discount'?'🔥':'📣'}</div>`;
+    const badgeClass = `badge-${p.type}`;
+    const badgeLabel = p.type==='product'?'Product':p.type==='discount'?'Discount':'Announcement';
+    let meta = date;
+    if (p.type==='product') meta += ` · ${p.cat||''} · Badge: ${p.badge||''}`;
+    if (p.type==='discount') meta += ` · ${p.pct}% OFF`;
+    const priceEl = p.type==='product' && p.price
+      ? `<div class="post-price">${p.price} <span style="font-size:0.7rem;font-weight:400;color:var(--text-dim)">${p.sub||''}</span></div>` : '';
+    const discountEl = p.type==='discount' && p.newPrice
+      ? `<div class="post-price">${p.newPrice} <span style="font-size:0.7rem;font-weight:400;color:var(--text-dim);text-decoration:line-through;">${p.origPrice||''}</span></div>` : '';
+
+    return `
+    <div class="post-item" id="post-${p.id}">
+      ${imgEl}
+      <div class="post-body">
+        <span class="post-type-badge ${badgeClass}">${badgeLabel}</span>
+        <div class="post-name">${p.name}</div>
+        <div class="post-meta">${meta}</div>
+        ${p.note ? `<div class="post-meta" style="margin-top:3px;">${p.note.substring(0,80)}${p.note.length>80?'…':''}</div>` : ''}
+        ${priceEl}${discountEl}
+        <div class="post-actions">
+          <button class="btn btn-red btn-sm" onclick="askDelete('${p.id}')">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function askDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('confirmModal').classList.add('open');
+}
+function closeConfirm() {
+  pendingDeleteId = null;
+  document.getElementById('confirmModal').classList.remove('open');
+}
+document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+  if (!pendingDeleteId) return;
+  const posts = getPosts().filter(p => p.id !== pendingDeleteId);
+  savePosts(posts);
+  closeConfirm();
+  renderPostsList();
+  refreshStats();
+  showToast('Post deleted.');
+});
+
+/* ════════════════════════════════
+   STATS
+════════════════════════════════ */
+function refreshStats() {
+  const posts = getPosts();
+  document.getElementById('statTotal').textContent     = posts.length;
+  document.getElementById('statProducts').textContent  = posts.filter(p=>p.type==='product').length;
+  document.getElementById('statDiscounts').textContent = posts.filter(p=>p.type==='discount').length;
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isError ? 'error' : '';
+  requestAnimationFrame(() => { t.classList.add('show'); });
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>

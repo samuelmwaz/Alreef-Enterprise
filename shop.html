@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Al Reef Shop | Latest Products & Deals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#7a5f2a;
+  --red:#ef4444;--blue:#3b82f6;--green:#22c55e;
+  --radius:12px;--nav-h:62px;--transition:0.32s ease;
+}
+[data-theme="dark"]{
+  --bg:#080706;--bg-2:#111009;--bg-3:#18160f;
+  --surface:#1c1a12;--surface-2:#232017;
+  --border:rgba(201,168,76,0.14);--border-2:rgba(201,168,76,0.07);
+  --text:#f0ead8;--text-dim:rgba(240,234,216,0.5);--text-muted:rgba(240,234,216,0.28);
+  --nav-bg:rgba(8,7,6,0.94);--hero-grad:radial-gradient(ellipse at 50% 40%,#1a1408 0%,#080706 70%);
+  --card-bg:#161410;--info-bg:#0e0d08;--shadow:0 4px 24px rgba(0,0,0,0.55);--toggle-bg:#2a2510;
+}
+[data-theme="light"]{
+  --bg:#faf8f3;--bg-2:#f3efe4;--bg-3:#ede9dc;
+  --surface:#ffffff;--surface-2:#f8f5ee;
+  --border:rgba(180,140,60,0.18);--border-2:rgba(180,140,60,0.08);
+  --text:#1a1611;--text-dim:rgba(26,22,17,0.55);--text-muted:rgba(26,22,17,0.3);
+  --nav-bg:rgba(250,248,243,0.96);--hero-grad:radial-gradient(ellipse at 50% 40%,#f0e8cc 0%,#faf8f3 70%);
+  --card-bg:#ffffff;--info-bg:#f3efe4;--shadow:0 4px 24px rgba(0,0,0,0.07);--toggle-bg:#e8e0cc;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;transition:background var(--transition),color var(--transition);-webkit-tap-highlight-color:transparent;}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+
+/* ── SCROLL BAR ── */
+.scroll-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0%;z-index:9999;pointer-events:none;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:900;
+  background:var(--nav-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  transition:background var(--transition),border-color var(--transition);
+}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:900;color:var(--gold);letter-spacing:2px;}
+.nav-logo small{display:block;font-family:'Inter',sans-serif;font-size:0.5rem;font-weight:400;letter-spacing:4px;text-transform:uppercase;color:var(--text-muted);margin-top:3px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+.theme-toggle{width:50px;height:26px;background:var(--toggle-bg);border:1px solid var(--border);border-radius:100px;cursor:pointer;position:relative;display:flex;align-items:center;padding:0 5px;justify-content:space-between;}
+.tog-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--gold);transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+[data-theme="light"] .tog-knob{transform:translateX(23px);}
+.tog-icon{font-size:9px;}
+
+.hamburger{width:40px;height:40px;border:1px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.hamburger span{display:block;width:18px;height:1.5px;background:var(--text);border-radius:2px;transition:all 0.28s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.7px,4.7px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.7px,-4.7px);}
+
+.nav-drawer{position:fixed;top:var(--nav-h);left:0;right:0;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:850;max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+.nav-drawer.open{max-height:260px;}
+.nav-drawer a{display:block;font-size:0.76rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);padding:13px 20px;border-bottom:1px solid var(--border);transition:color 0.2s,background 0.2s;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:active{color:var(--gold);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100svh;padding-top:var(--nav-h);
+  background:var(--hero-grad);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding-left:24px;padding-right:24px;
+  position:relative;overflow:hidden;transition:background var(--transition);
+}
+.hero-ring{position:absolute;border:1px solid rgba(201,168,76,0.13);border-radius:50%;pointer-events:none;}
+.hero-ring-1{width:min(320px,84vw);height:min(320px,84vw);animation:spinR 22s linear infinite;}
+.hero-ring-2{width:min(220px,56vw);height:min(220px,56vw);animation:spinR 14s linear infinite reverse;}
+@keyframes spinR{to{transform:rotate(360deg);}}
+.particle{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:rise linear infinite;pointer-events:none;}
+@keyframes rise{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.5;}90%{opacity:0.2;}100%{transform:translateY(-80px);opacity:0;}}
+
+.hero-eyebrow{font-size:0.58rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;opacity:0;animation:fadeUp 0.7s ease forwards 0.2s;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,10vw,4.8rem);font-weight:900;line-height:1.05;color:var(--text);margin-bottom:14px;opacity:0;animation:fadeUp 0.7s ease forwards 0.4s;}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:clamp(0.82rem,3.5vw,1rem);font-weight:300;color:var(--text-dim);line-height:1.75;max-width:300px;margin:0 auto 32px;opacity:0;animation:fadeUp 0.7s ease forwards 0.6s;}
+.hero-btns{display:flex;flex-direction:column;gap:11px;width:100%;max-width:300px;opacity:0;animation:fadeUp 0.7s ease forwards 0.8s;}
+.btn-gold{display:block;width:100%;padding:15px;background:var(--gold);color:#050505;font-family:'Inter',sans-serif;font-size:0.67rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;border-radius:6px;border:none;cursor:pointer;text-align:center;transition:background 0.2s,transform 0.15s;-webkit-appearance:none;}
+.btn-gold:active{transform:scale(0.97);background:var(--gold-light);}
+.btn-outline{display:block;width:100%;padding:14px;background:transparent;color:var(--gold);font-family:'Inter',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;border-radius:6px;border:1px solid var(--gold);cursor:pointer;text-align:center;transition:background 0.2s,transform 0.15s;-webkit-appearance:none;}
+.btn-outline:active{transform:scale(0.97);}
+.hero-scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0.4;animation:bob 2.2s ease-in-out infinite;}
+.hero-scroll span{font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);}
+.arr{font-size:0.9rem;color:var(--gold);}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(7px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MARQUEE ── */
+.marquee-wrap{background:var(--gold);padding:11px 0;overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;animation:marquee 22s linear infinite;}
+.marquee-item{font-family:'Inter',sans-serif;font-size:0.56rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#050505;padding:0 24px;}
+.marquee-dot{color:rgba(5,5,5,0.3);}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── INFO BAR ── */
+.info-bar{background:var(--info-bg);border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;transition:background var(--transition);}
+.info-cell{display:flex;align-items:center;gap:10px;padding:14px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.info-cell:nth-child(2n){border-right:none;}
+.info-cell:nth-child(n+3){border-bottom:none;}
+.info-icon-box{width:32px;height:32px;border:1px solid var(--border);border-radius:7px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+.info-label{font-size:0.48rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.info-value{font-size:0.72rem;font-weight:500;color:var(--text);margin-top:2px;}
+
+/* ── SECTIONS ── */
+.section{padding:52px 20px;}
+.section.alt{background:var(--bg-2);transition:background var(--transition);}
+.section-eyebrow{font-size:0.55rem;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:9px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:var(--text);text-align:center;line-height:1.2;}
+.section-title em{font-style:italic;color:var(--gold);}
+.section-line{width:44px;height:2px;background:var(--gold);margin:13px auto 36px;border-radius:2px;}
+
+/* ── FILTER PILLS ── */
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:28px;scrollbar-width:none;}
+.filter-row::-webkit-scrollbar{display:none;}
+.filter-pill{
+  flex-shrink:0;padding:8px 16px;border-radius:100px;
+  border:1px solid var(--border);background:transparent;
+  font-size:0.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:all 0.2s;
+  -webkit-appearance:none;
+}
+.filter-pill.active,.filter-pill:hover{background:var(--gold);color:#050505;border-color:var(--gold);}
+
+/* ── CARDS GRID ── */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* Product Card */
+.product-card{background:var(--card-bg);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:background var(--transition),transform 0.2s;}
+.product-card:active{transform:scale(0.975);}
+.product-img-wrap{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--bg-3);}
+.product-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
+.product-card:hover .product-img-wrap img{transform:scale(1.05);}
+.no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--bg-3);}
+.product-badge{position:absolute;top:8px;left:8px;background:var(--gold);color:#050505;font-size:0.47rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 8px;border-radius:4px;}
+.product-body{padding:12px 11px 14px;display:flex;flex-direction:column;flex:1;}
+.product-cat{font-size:0.5rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.product-name{font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.25;}
+.product-note{font-size:0.7rem;color:var(--text-dim);line-height:1.5;margin-bottom:9px;flex:1;}
+.product-price{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.product-price small{font-family:'Inter',sans-serif;font-size:0.57rem;font-weight:400;color:var(--text-muted);display:block;margin-top:2px;}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 8px;background:#25d366;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:6px;border:none;cursor:pointer;transition:background 0.2s,transform 0.15s;-webkit-appearance:none;}
+.btn-wa:active{transform:scale(0.95);background:#1db954;}
+
+/* Discount Card */
+.discount-card{background:var(--card-bg);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(239,68,68,0.2);box-shadow:var(--shadow);grid-column:1/-1;display:flex;gap:0;flex-direction:column;transition:background var(--transition);}
+.discount-card .disc-img{height:180px;overflow:hidden;position:relative;background:var(--bg-3);}
+.discount-card .disc-img img{width:100%;height:100%;object-fit:cover;}
+.discount-card .disc-img .no-photo{height:100%;}
+.discount-banner{background:var(--red);padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.disc-pct-big{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#fff;}
+.disc-off-label{font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.8);}
+.disc-body{padding:14px;}
+.disc-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:5px;}
+.disc-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;}
+.disc-new{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--red);}
+.disc-orig{font-size:0.85rem;color:var(--text-muted);text-decoration:line-through;}
+.disc-note{font-size:0.75rem;color:var(--text-dim);line-height:1.5;margin-bottom:12px;}
+
+/* Announcement Card */
+.ann-card{background:linear-gradient(135deg,var(--bg-3),var(--bg-2));border-radius:var(--radius);border:1px solid rgba(59,130,246,0.2);padding:20px 16px;grid-column:1/-1;transition:background var(--transition);}
+.ann-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ann-icon{font-size:1.4rem;}
+.ann-type-badge{font-size:0.5rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:rgba(59,130,246,0.12);color:var(--blue);}
+.ann-date{font-size:0.58rem;color:var(--text-muted);margin-left:auto;}
+.ann-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:7px;}
+.ann-msg{font-size:0.82rem;color:var(--text-dim);line-height:1.7;}
+
+/* Empty state */
+.empty-state{text-align:center;padding:52px 20px;grid-column:1/-1;}
+.empty-state .e-icon{font-size:3rem;margin-bottom:14px;}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:8px;}
+.empty-state p{font-size:0.82rem;color:var(--text-dim);line-height:1.6;max-width:260px;margin:0 auto;}
+
+/* Timestamp */
+.time-chip{display:inline-flex;align-items:center;gap:5px;font-size:0.55rem;color:var(--text-muted);letter-spacing:1px;margin-top:6px;}
+
+/* ── CONTACT ── */
+.contact-grid{display:flex;flex-direction:column;gap:9px;}
+.contact-card{display:flex;align-items:center;gap:13px;padding:15px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);transition:border-color 0.25s,transform 0.15s;}
+.contact-card:active{transform:scale(0.97);border-color:var(--gold);}
+.ccard-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.cgi-g{background:rgba(37,211,102,0.12);}
+.cgi-b{background:rgba(59,130,246,0.12);}
+.cgi-gold{background:rgba(201,168,76,0.12);}
+.contact-platform{font-size:0.53rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.contact-handle{font-size:0.87rem;font-weight:500;color:var(--text);margin-top:2px;}
+.contact-arrow{margin-left:auto;color:var(--text-muted);}
+
+/* ── FOOTER ── */
+footer{background:var(--footer-bg, #040403);padding:36px 20px 26px;border-top:1px solid rgba(201,168,76,0.12);}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:8px;}
+.footer-desc{font-size:0.76rem;color:rgba(240,234,216,0.36);line-height:1.7;margin-bottom:24px;}
+.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:16px;}
+.footer-col h5{font-size:0.54rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.footer-col a,.footer-col p{font-size:0.76rem;color:rgba(240,234,216,0.36);line-height:2.1;display:block;}
+.footer-col a:hover{color:var(--gold);}
+.footer-copy{text-align:center;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(240,234,216,0.18);}
+
+/* ── FLOATING WA ── */
+.float-wa{position:fixed;bottom:22px;right:18px;z-index:800;width:54px;height:54px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 20px rgba(37,211,102,0.45);animation:waPulse 2.8s ease-in-out infinite;transition:transform 0.2s;}
+.float-wa:active{transform:scale(0.88);}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.45);}50%{box-shadow:0 4px 34px rgba(37,211,102,0.75);}}
+
+/* ── RESPONSIVE ── */
+@media(min-width:500px){.cards-grid{gap:14px;}}
+@media(min-width:680px){
+  nav{padding:0 36px;} .section{padding:70px 36px;}
+  .cards-grid{grid-template-columns:repeat(3,1fr);}
+  .discount-card,.ann-card{grid-column:span 1;}
+  .discount-card{flex-direction:row;}
+  .discount-card .disc-img{width:200px;height:auto;flex-shrink:0;}
+  .info-bar{grid-template-columns:repeat(4,1fr);}
+  .info-cell{border-bottom:none;}
+  .info-cell:nth-child(2){border-right:1px solid var(--border);}
+  .info-cell:nth-child(3){border-right:1px solid var(--border);}
+  .hero-btns{flex-direction:row;max-width:360px;}
+  .hero-btns .btn-gold,.hero-btns .btn-outline{flex:1;}
+}
+@media(min-width:1024px){nav{padding:0 72px;} .section{padding:90px 72px;} .cards-grid{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Al Reef<small>Kamwala · Lusaka</small></div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle">
+      <span class="tog-icon">🌙</span>
+      <div class="tog-knob"></div>
+      <span class="tog-icon">☀️</span>
+    </button>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#home"    onclick="closeMenu()">Home</a>
+  <a href="#shop"    onclick="closeMenu()">New Arrivals</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="home.html">Back to Main Site</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div id="particleContainer"></div>
+  <div class="hero-ring hero-ring-1"></div>
+  <div class="hero-ring hero-ring-2"></div>
+  <p class="hero-eyebrow">Fresh From Al Reef · Kamwala</p>
+  <h1 class="hero-title">Latest <em>Drops</em><br>& Deals</h1>
+  <p class="hero-sub">New products, discounts & announcements posted directly by our team.</p>
+  <div class="hero-btns">
+    <a href="#shop" class="btn-gold">See New Arrivals</a>
+    <a href="https://wa.me/260974333332" target="_blank" rel="noopener" class="btn-outline">Order Now</a>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><span class="arr">↓</span></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap"><div class="marquee-track" id="marqueeTrack"></div></div>
+
+<!-- INFO BAR -->
+<div class="info-bar">
+  <div class="info-cell"><div class="info-icon-box">📍</div><div><div class="info-label">Location</div><div class="info-value">Kamwala, Lusaka</div></div></div>
+  <div class="info-cell"><div class="info-icon-box">🕐</div><div><div class="info-label">Open</div><div class="info-value">Mon – Saturday</div></div></div>
+  <div class="info-cell"><div class="info-icon-box">📞</div><div><div class="info-label">WhatsApp</div><div class="info-value">+260 974 333 332</div></div></div>
+  <div class="info-cell"><div class="info-icon-box">📦</div><div><div class="info-label">Service</div><div class="info-value">Retail &amp; Wholesale</div></div></div>
+</div>
+
+<!-- SHOP FEED -->
+<section class="section" id="shop">
+  <p class="section-eyebrow">Live From Admin</p>
+  <h2 class="section-title">New <em>Arrivals</em></h2>
+  <div class="section-line"></div>
+
+  <!-- Filter pills -->
+  <div class="filter-row">
+    <button class="filter-pill active" onclick="filterPosts('all',this)">All</button>
+    <button class="filter-pill" onclick="filterPosts('product',this)">🧴 Products</button>
+    <button class="filter-pill" onclick="filterPosts('discount',this)">🔥 Discounts</button>
+    <button class="filter-pill" onclick="filterPosts('announcement',this)">📣 Announcements</button>
+  </div>
+
+  <div class="cards-grid" id="shopGrid"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="section alt" id="contact">
+  <p class="section-eyebrow">Get In Touch</p>
+  <h2 class="section-title">Order &amp; <em>Enquiries</em></h2>
+  <div class="section-line"></div>
+  <div class="contact-grid">
+    <a href="https://wa.me/260974333332" target="_blank" rel="noopener" class="contact-card">
+      <div class="ccard-icon cgi-g">💬</div>
+      <div><div class="contact-platform">WhatsApp</div><div class="contact-handle">+260 974 333 332</div></div>
+      <span class="contact-arrow">›</span>
+    </a>
+    <a href="tel:+260974333332" class="contact-card">
+      <div class="ccard-icon cgi-gold">📞</div>
+      <div><div class="contact-platform">Phone Call</div><div class="contact-handle">+260 974 333 332</div></div>
+      <span class="contact-arrow">›</span>
+    </a>
+    <a href="https://www.tiktok.com/@alreef.cosmetics" target="_blank" rel="noopener" class="contact-card">
+      <div class="ccard-icon cgi-b">📱</div>
+      <div><div class="contact-platform">TikTok</div><div class="contact-handle">@alreef.cosmetics</div></div>
+      <span class="contact-arrow">›</span>
+    </a>
+    <a href="https://maps.google.com/?q=Kamwala+Lusaka+Zambia" target="_blank" rel="noopener" class="contact-card">
+      <div class="ccard-icon cgi-gold">📍</div>
+      <div><div class="contact-platform">Visit Us</div><div class="contact-handle">Kamwala, Lusaka</div></div>
+      <span class="contact-arrow">›</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Al Reef Enterprise</div>
+  <p class="footer-desc">Your home for original Arabic perfumes and premium cosmetics in Zambia.</p>
+  <div class="footer-links">
+    <div class="footer-col"><h5>Navigate</h5><a href="#shop">New Arrivals</a><a href="#contact">Contact</a><a href="home.html">Main Site</a></div>
+    <div class="footer-col"><h5>Find Us</h5><p>Kamwala, Lusaka</p><p>Mon – Saturday</p><a href="tel:+260974333332">+260 974 333 332</a></div>
+  </div>
+  <p class="footer-copy">© 2026 Al Reef Enterprise · Kamwala</p>
+</footer>
+
+<a href="https://wa.me/260974333332" target="_blank" rel="noopener" class="float-wa" aria-label="WhatsApp">💬</a>
+
+<script>
+const STORE_KEY = 'alreef_posts';
+const WA = '260974333332';
+let currentFilter = 'all';
+
+/* ── Theme ── */
+const html = document.documentElement;
+const saved = localStorage.getItem('alreef-theme') || 'dark';
+html.setAttribute('data-theme', saved);
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('alreef-theme', next);
+});
+
+/* ── Hamburger ── */
+const ham = document.getElementById('hamburger');
+const drawer = document.getElementById('navDrawer');
+ham.addEventListener('click', () => { ham.classList.toggle('open'); drawer.classList.toggle('open'); });
+function closeMenu() { ham.classList.remove('open'); drawer.classList.remove('open'); }
+document.addEventListener('click', e => { if(!ham.contains(e.target)&&!drawer.contains(e.target)) closeMenu(); });
+
+/* ── Scroll ── */
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('scrollBar').style.width = pct + '%';
+}, {passive:true});
+
+/* ── Particles ── */
+const pc = document.getElementById('particleContainer');
+for(let i=0;i<14;i++){
+  const p=document.createElement('div'); p.className='particle';
+  const sz=1.5+Math.random()*2.5;
+  p.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;animation-duration:${7+Math.random()*10}s;animation-delay:${Math.random()*9}s;`;
+  pc.appendChild(p);
+}
+
+/* ── Marquee ── */
+const words=['NEW ARRIVALS','LATTAFA','FRESH STOCK','DISCOUNTS','ARABIC OUD','KAMWALA LUSAKA','PREMIUM SCENTS','ORDER VIA WHATSAPP'];
+const track=document.getElementById('marqueeTrack');
+let m='';
+for(let r=0;r<4;r++) words.forEach(w=>{m+=`<span class="marquee-item">${w}</span><span class="marquee-dot">✦</span>`;});
+track.innerHTML=m;
+
+/* ── DATA ── */
+function getPosts(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY))||[]; }catch(e){return[];}
+}
+
+function timeAgo(iso){
+  const d=new Date(iso), now=new Date();
+  const diff=Math.floor((now-d)/1000);
+  if(diff<60) return 'just now';
+  if(diff<3600) return Math.floor(diff/60)+'m ago';
+  if(diff<86400) return Math.floor(diff/3600)+'h ago';
+  if(diff<604800) return Math.floor(diff/86400)+'d ago';
+  return d.toLocaleDateString('en-ZM',{day:'numeric',month:'short'});
+}
+
+/* ── FILTER ── */
+function filterPosts(type, btn){
+  currentFilter = type;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderShop();
+}
+
+/* ── RENDER ── */
+function renderShop(){
+  let posts = getPosts();
+  if(currentFilter !== 'all') posts = posts.filter(p=>p.type===currentFilter);
+  const grid = document.getElementById('shopGrid');
+
+  if(!posts.length){
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="e-icon">✨</div>
+        <h3>Check Back Soon</h3>
+        <p>${currentFilter==='all'?'The admin hasn\'t posted anything yet. New products and deals will appear here.':'No '+currentFilter+' posts yet.'}</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = posts.map(p => {
+    const ago = timeAgo(p.createdAt);
+    const imgTag = p.photo
+      ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">`
+      : `<div class="no-photo">${p.type==='product'?'🧴':p.type==='discount'?'🔥':'📣'}</div>`;
+
+    if(p.type === 'product'){
+      const msg = encodeURIComponent(`Hi Al Reef! I'd like to order: ${p.name} (${p.price}). Please confirm.`);
+      return `
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge">${p.badge||'New'}</span>
+          ${imgTag}
+        </div>
+        <div class="product-body">
+          <p class="product-cat">${p.cat||'Arabic Perfume'}</p>
+          <h3 class="product-name">${p.name}</h3>
+          ${p.note?`<p class="product-note">${p.note}</p>`:''}
+          <div class="product-price">${p.price}<small>${p.sub||''}</small></div>
+          <a href="https://wa.me/${WA}?text=${msg}" target="_blank" rel="noopener" class="btn-wa">💬 Order</a>
+          <span class="time-chip">🕐 ${ago}</span>
+        </div>
+      </div>`;
+    }
+
+    if(p.type === 'discount'){
+      const msg = encodeURIComponent(`Hi Al Reef! I saw the ${p.pct}% discount on "${p.name}". Is it still available?`);
+      return `
+      <div class="discount-card">
+        <div class="disc-img">${imgTag}</div>
+        <div>
+          <div class="discount-banner">
+            <span class="disc-pct-big">${p.pct}%</span>
+            <span class="disc-off-label">OFF — Limited Time Deal</span>
+          </div>
+          <div class="disc-body">
+            <div class="disc-name">${p.name}</div>
+            ${(p.newPrice||p.origPrice)?`
+            <div class="disc-prices">
+              ${p.newPrice?`<span class="disc-new">${p.newPrice}</span>`:''}
+              ${p.origPrice?`<span class="disc-orig">${p.origPrice}</span>`:''}
+            </div>`:''}
+            ${p.note?`<div class="disc-note">${p.note}</div>`:''}
+            <a href="https://wa.me/${WA}?text=${msg}" target="_blank" rel="noopener" class="btn-wa" style="max-width:220px;">💬 Claim Discount</a>
+            <span class="time-chip" style="margin-left:0;">🕐 ${ago}</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    if(p.type === 'announcement'){
+      return `
+      <div class="ann-card">
+        <div class="ann-header">
+          <span class="ann-icon">📣</span>
+          <span class="ann-type-badge">Announcement</span>
+          <span class="ann-date">${ago}</span>
+        </div>
+        <div class="ann-title">${p.name}</div>
+        <div class="ann-msg">${p.note}</div>
+        ${p.photo?`<img src="${p.photo}" alt="announcement" style="margin-top:14px;width:100%;max-height:220px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">`:''}
+      </div>`;
+    }
+    return '';
+  }).join('');
+}
+
+/* ── INIT ── */
+renderShop();
+
+// Auto-refresh every 30s so new admin posts appear
+setInterval(renderShop, 30000);
+
+// Also refresh on storage event (if admin is in another tab)
+window.addEventListener('storage', e => { if(e.key === STORE_KEY) renderShop(); });
+</script>
+</body>
+</html>
