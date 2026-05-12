@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Reef Enterprise | Order & Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;500&family=Didact+Gothic&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-dim: #7a5f2a;
+            --black: #050505;
+            --dark: #0d0d0d;
+            --dark-2: #141414;
+            --dark-3: #1c1a17;
+            --white: #f5f0e8;
+            --white-dim: rgba(245, 240, 232, 0.55);
+            --green: #25D366;
+            --green-dark: #128C7E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+            min-height: 100vh;
+        }
+
+        /* ─── CURSOR ─── */
+        .cursor-dot {
+            position: fixed; width: 6px; height: 6px;
+            background: var(--gold); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transition: transform 0.1s;
+        }
+        .cursor-ring {
+            position: fixed; width: 30px; height: 30px;
+            border: 1px solid var(--gold); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+            transition: transform 0.15s ease, width 0.2s, height 0.2s;
+        }
+
+        /* ─── SCROLL BAR ─── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            z-index: 1000;
+            padding: 20px 6%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.97), transparent);
+            backdrop-filter: blur(4px);
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem; font-weight: 900;
+            letter-spacing: 4px; color: var(--gold);
+            text-transform: uppercase; text-decoration: none;
+        }
+        .nav-logo span {
+            display: block;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.55rem; letter-spacing: 6px;
+            color: var(--white-dim); font-weight: 400;
+        }
+        .nav-links { display: flex; gap: 36px; list-style: none; }
+        .nav-links a {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.68rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--white-dim);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+        /* ─── PAGE HEADER ─── */
+        .page-header {
+            padding: 140px 8% 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(201,168,76,0.07) 0%, transparent 70%);
+        }
+        .header-eyebrow {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem; letter-spacing: 8px;
+            color: var(--gold); text-transform: uppercase;
+            margin-bottom: 16px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.2s;
+        }
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 900; line-height: 1.05;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.4s;
+        }
+        .header-title em { font-style: italic; color: var(--gold); }
+        .header-sub {
+            font-size: 1.05rem; font-weight: 300;
+            color: var(--white-dim); max-width: 500px;
+            line-height: 1.7; margin-top: 18px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.6s;
+        }
+        .gold-line {
+            width: 60px; height: 1px;
+            background: var(--gold); margin: 28px 0;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.5s;
+        }
+
+        /* ─── MAIN LAYOUT ─── */
+        .order-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 4% 80px;
+        }
+
+        /* ─── ORDER FORM PANEL ─── */
+        .form-panel {
+            padding: 60px 50px 60px 20px;
+            border-right: 1px solid rgba(201,168,76,0.15);
+        }
+        .panel-label {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem; letter-spacing: 6px;
+            color: var(--gold); text-transform: uppercase;
+            margin-bottom: 32px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .panel-label::after {
+            content: ''; flex: 1;
+            height: 1px; background: rgba(201,168,76,0.2);
+        }
+
+        /* ─── DELIVERY TOGGLE ─── */
+        .delivery-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+        .toggle-opt {
+            position: relative;
+            cursor: pointer;
+        }
+        .toggle-opt input {
+            position: absolute; opacity: 0; width: 0; height: 0;
+        }
+        .toggle-label {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 10px; padding: 24px 16px;
+            border: 1px solid rgba(201,168,76,0.2);
+            background: var(--dark-2);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .toggle-icon { font-size: 1.8rem; }
+        .toggle-title {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.7rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--white-dim);
+            transition: color 0.3s;
+        }
+        .toggle-desc {
+            font-size: 0.85rem; color: var(--white-dim);
+            opacity: 0.6; font-weight: 300;
+        }
+        .toggle-opt input:checked ~ .toggle-label {
+            border-color: var(--gold);
+            background: rgba(201,168,76,0.08);
+        }
+        .toggle-opt input:checked ~ .toggle-label .toggle-title {
+            color: var(--gold);
+        }
+        .toggle-opt:hover .toggle-label {
+            border-color: rgba(201,168,76,0.4);
+        }
+
+        /* ─── FORM FIELDS ─── */
+        .field-group { margin-bottom: 22px; }
+        .field-label {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem; letter-spacing: 4px;
+            text-transform: uppercase; color: var(--gold-dim);
+            display: block; margin-bottom: 8px;
+        }
+        .field-input {
+            width: 100%; background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,0.2);
+            color: var(--white); padding: 14px 18px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem; transition: border-color 0.3s;
+            outline: none;
+        }
+        .field-input:focus { border-color: var(--gold); }
+        .field-input::placeholder { color: rgba(245,240,232,0.3); }
+        .field-input option { background: var(--dark-2); }
+
+        .fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ─── DELIVERY LOCATION (shown when delivery selected) ─── */
+        #deliveryFields { display: none; }
+        #deliveryFields.show { display: block; }
+
+        /* ─── ORDER SUMMARY STRIP ─── */
+        .product-select-strip {
+            background: var(--dark-3);
+            border: 1px solid rgba(201,168,76,0.15);
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex; align-items: center;
+            gap: 16px; cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .product-select-strip:hover { border-color: var(--gold-dim); }
+        .strip-img {
+            width: 52px; height: 52px;
+            object-fit: cover;
+            border: 1px solid rgba(201,168,76,0.3);
+        }
+        .strip-info { flex: 1; }
+        .strip-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; font-weight: 700;
+        }
+        .strip-price { font-size: 0.85rem; color: var(--gold); margin-top: 2px; }
+        .strip-check {
+            width: 22px; height: 22px;
+            border: 1px solid rgba(201,168,76,0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: var(--gold);
+            flex-shrink: 0;
+        }
+        .product-select-strip.selected {
+            border-color: var(--gold);
+            background: rgba(201,168,76,0.06);
+        }
+        .product-select-strip.selected .strip-check {
+            background: var(--gold); color: var(--black);
+        }
+
+        /* ─── SUBMIT BUTTON ─── */
+        .submit-btn {
+            width: 100%;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.72rem; letter-spacing: 4px;
+            text-transform: uppercase;
+            padding: 20px; background: var(--gold);
+            color: var(--black); font-weight: 700;
+            border: none; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+            margin-top: 8px;
+        }
+        .submit-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--gold-light);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .submit-btn:hover::before { transform: translateX(0); }
+        .submit-btn span { position: relative; z-index: 1; }
+
+        /* ─── RIGHT PANEL ─── */
+        .info-panel {
+            padding: 60px 20px 60px 50px;
+        }
+
+        /* ─── WHATSAPP CHAT BLOCK ─── */
+        .wa-block {
+            background: linear-gradient(135deg, #075E54 0%, #128C7E 100%);
+            padding: 32px 28px;
+            margin-bottom: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wa-block::before {
+            content: '';
+            position: absolute; top: -30px; right: -30px;
+            width: 120px; height: 120px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .wa-block::after {
+            content: '';
+            position: absolute; top: -60px; right: -60px;
+            width: 180px; height: 180px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 50%;
+        }
+        .wa-title {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem; letter-spacing: 5px;
+            text-transform: uppercase; color: rgba(255,255,255,0.7);
+            margin-bottom: 12px;
+        }
+        .wa-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 700;
+            color: #fff; margin-bottom: 8px;
+        }
+        .wa-sub {
+            font-size: 0.9rem; color: rgba(255,255,255,0.75);
+            font-weight: 300; line-height: 1.6; margin-bottom: 20px;
+        }
+        .wa-number {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 1.1rem; letter-spacing: 3px;
+            color: #fff; font-weight: 700;
+            margin-bottom: 18px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .wa-number::before {
+            content: '';
+            display: inline-block; width: 10px; height: 10px;
+            background: #4ADE80; border-radius: 50%;
+            animation: pulse-green 2s ease infinite;
+        }
+        @keyframes pulse-green {
+            0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+        }
+        .wa-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #fff; color: #075E54;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.7rem; letter-spacing: 3px;
+            text-transform: uppercase; font-weight: 700;
+            padding: 14px 26px; text-decoration: none;
+            transition: all 0.3s; position: relative; z-index: 1;
+        }
+        .wa-btn:hover { background: #dcf8c6; }
+        .wa-btn svg { width: 16px; height: 16px; }
+
+        /* ─── QUICK CHAT MOCKUP ─── */
+        .chat-preview {
+            background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,0.15);
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+        .chat-header {
+            background: var(--dark-3);
+            padding: 14px 18px;
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(201,168,76,0.1);
+        }
+        .chat-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; color: var(--black);
+            font-family: 'Playfair Display', serif;
+        }
+        .chat-meta { flex: 1; }
+        .chat-name {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.75rem; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--white);
+        }
+        .chat-status {
+            font-size: 0.75rem; color: var(--green);
+        }
+        .chat-body { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            font-size: 0.88rem; line-height: 1.5;
+            font-weight: 300; border-radius: 0;
+        }
+        .chat-msg.them {
+            background: var(--dark-3);
+            border-left: 2px solid var(--gold-dim);
+            align-self: flex-start;
+            color: var(--white-dim);
+        }
+        .chat-msg.us {
+            background: rgba(201,168,76,0.12);
+            border-right: 2px solid var(--gold);
+            align-self: flex-end; text-align: right;
+            color: var(--white);
+        }
+        .chat-msg .msg-time {
+            font-size: 0.65rem; opacity: 0.4;
+            margin-top: 4px; display: block;
+            font-family: 'Didact Gothic', sans-serif;
+        }
+        .chat-input-row {
+            padding: 12px 18px;
+            border-top: 1px solid rgba(201,168,76,0.1);
+            display: flex; gap: 10px; align-items: center;
+        }
+        .chat-type-input {
+            flex: 1; background: var(--dark-3);
+            border: 1px solid rgba(201,168,76,0.15);
+            color: var(--white); padding: 10px 14px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem; outline: none;
+        }
+        .chat-type-input::placeholder { color: rgba(245,240,232,0.3); }
+        .chat-send-btn {
+            background: var(--green-dark); border: none;
+            color: #fff; padding: 10px 14px;
+            cursor: pointer; transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+        .chat-send-btn:hover { background: var(--green); }
+
+        /* ─── HOW IT WORKS ─── */
+        .how-steps {
+            display: flex; flex-direction: column; gap: 0;
+        }
+        .step {
+            display: flex; gap: 20px; align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(201,168,76,0.08);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem; font-weight: 900;
+            color: rgba(201,168,76,0.2); flex-shrink: 0;
+            line-height: 1; min-width: 36px;
+        }
+        .step-info {}
+        .step-title {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.68rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--gold);
+            margin-bottom: 4px;
+        }
+        .step-desc {
+            font-size: 0.9rem; color: var(--white-dim);
+            font-weight: 300; line-height: 1.6;
+        }
+
+        /* ─── SUCCESS MODAL ─── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,5,5,0.92);
+            z-index: 2000; display: none;
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,0.3);
+            padding: 52px 48px; max-width: 520px;
+            text-align: center; position: relative;
+            animation: scaleIn 0.4s ease;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 20px; }
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem; font-weight: 900; margin-bottom: 12px;
+        }
+        .modal-title em { font-style: italic; color: var(--gold); }
+        .modal-text {
+            font-size: 0.95rem; color: var(--white-dim);
+            font-weight: 300; line-height: 1.7; margin-bottom: 28px;
+        }
+        .modal-ref {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem; letter-spacing: 4px;
+            color: var(--gold); margin-bottom: 28px;
+        }
+        .modal-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .modal-wa {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--green-dark); color: #fff;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.68rem; letter-spacing: 3px;
+            text-transform: uppercase; font-weight: 700;
+            padding: 14px 24px; text-decoration: none;
+            transition: background 0.3s;
+        }
+        .modal-wa:hover { background: var(--green); }
+        .modal-close {
+            display: inline-block;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.68rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--white-dim);
+            padding: 14px 24px; cursor: pointer;
+            border: 1px solid rgba(201,168,76,0.2);
+            transition: all 0.3s;
+        }
+        .modal-close:hover { color: var(--gold); border-color: var(--gold); }
+
+        /* ─── ADMIN PORTAL SECTION ─── */
+        .admin-section {
+            background: var(--dark-2);
+            border-top: 1px solid rgba(201,168,76,0.12);
+            padding: 80px 8%;
+        }
+        .admin-section .section-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-end; margin-bottom: 48px;
+            flex-wrap: wrap; gap: 20px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem; font-weight: 900;
+        }
+        .section-title em { font-style: italic; color: var(--gold); }
+        .section-note {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem; letter-spacing: 4px;
+            text-transform: uppercase; color: var(--gold-dim);
+        }
+
+        /* Admin tabs */
+        .admin-tabs {
+            display: flex; gap: 0;
+            border-bottom: 1px solid rgba(201,168,76,0.15);
+            margin-bottom: 32px;
+        }
+        .admin-tab {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.65rem; letter-spacing: 4px;
+            text-transform: uppercase; padding: 14px 28px;
+            cursor: pointer; border-bottom: 2px solid transparent;
+            color: var(--white-dim); transition: all 0.3s;
+            margin-bottom: -1px;
+        }
+        .admin-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .admin-tab:hover { color: var(--white); }
+
+        /* Orders table */
+        .orders-tab-content { display: none; }
+        .orders-tab-content.show { display: block; }
+
+        .orders-grid {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .order-card {
+            background: var(--dark-3);
+            border: 1px solid rgba(201,168,76,0.1);
+            padding: 20px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            align-items: center; gap: 20px;
+            transition: border-color 0.3s;
+        }
+        .order-card:hover { border-color: rgba(201,168,76,0.3); }
+        .order-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem; font-weight: 700;
+        }
+        .order-phone {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.75rem; letter-spacing: 2px;
+            color: var(--gold); margin-top: 4px;
+        }
+        .order-product {
+            font-size: 0.85rem; color: var(--white-dim);
+            font-weight: 300;
+        }
+        .order-product strong { color: var(--white); display: block; margin-bottom: 2px; }
+        .order-type {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem; letter-spacing: 2px;
+            text-transform: uppercase; padding: 6px 12px;
+            border: 1px solid;
+        }
+        .order-type.delivery { color: #60A5FA; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.06); }
+        .order-type.pickup { color: #A78BFA; border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.06); }
+        .order-actions { display: flex; gap: 8px; }
+        .action-btn {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.58rem; letter-spacing: 2px;
+            text-transform: uppercase; padding: 8px 14px;
+            cursor: pointer; border: 1px solid; transition: all 0.2s;
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 6px;
+        }
+        .action-btn.wa { color: var(--green); border-color: rgba(37,211,102,0.3); background: transparent; }
+        .action-btn.wa:hover { background: rgba(37,211,102,0.1); }
+        .action-btn.done { color: var(--white-dim); border-color: rgba(201,168,76,0.2); background: transparent; }
+        .action-btn.done:hover { color: var(--gold); border-color: var(--gold); }
+
+        .admin-empty {
+            text-align: center; padding: 60px 0;
+            color: var(--white-dim); font-weight: 300;
+        }
+        .admin-empty p { font-size: 1rem; margin-bottom: 8px; }
+        .admin-empty small {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--gold-dim);
+        }
+
+        /* stats row */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            margin-bottom: 36px;
+        }
+        .stat-card {
+            background: var(--dark-3);
+            border: 1px solid rgba(201,168,76,0.1);
+            padding: 20px;
+        }
+        .stat-card-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem; font-weight: 900; color: var(--gold);
+        }
+        .stat-card-label {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.6rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--white-dim);
+            margin-top: 4px;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--dark);
+            border-top: 1px solid rgba(201,168,76,0.1);
+            padding: 50px 8% 30px;
+            text-align: center;
+        }
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem; font-weight: 900;
+            letter-spacing: 4px; color: var(--gold);
+            text-transform: uppercase; margin-bottom: 16px;
+        }
+        .footer-links {
+            display: flex; justify-content: center;
+            gap: 32px; list-style: none; margin-bottom: 20px;
+        }
+        .footer-links a {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.62rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--white-dim);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-copy {
+            font-family: 'Didact Gothic', sans-serif;
+            font-size: 0.58rem; letter-spacing: 2px;
+            color: rgba(245,240,232,0.25);
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .order-layout { grid-template-columns: 1fr; }
+            .form-panel { padding: 40px 20px; border-right: none; border-bottom: 1px solid rgba(201,168,76,0.1); }
+            .info-panel { padding: 40px 20px; }
+            .order-card { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .order-actions { grid-column: 1/-1; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            nav { padding: 16px 4%; }
+            .nav-links { gap: 20px; }
+            .nav-links a { font-size: 0.6rem; letter-spacing: 2px; }
+        }
+        @media (max-width: 600px) {
+            .fields-row { grid-template-columns: 1fr; }
+            .delivery-toggle { grid-template-columns: 1fr; }
+            .order-card { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .modal-box { padding: 36px 24px; margin: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ─── NAV ─── -->
+<nav>
+    <a href="home.html" class="nav-logo">
+        Al Reef<span>Enterprise · Lusaka</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="home.html#collection">Collection</a></li>
+        <li><a href="#" class="active">Order</a></li>
+        <li><a href="admin.html">Admin Portal</a></li>
+        <li><a href="home.html#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header">
+    <p class="header-eyebrow">Al Reef Enterprise · Lusaka</p>
+    <h1 class="header-title">Place Your<br><em>Order</em></h1>
+    <div class="gold-line"></div>
+    <p class="header-sub">Delivery straight to your door, or walk in and pick up from Kamwala Market. We'll confirm your order via WhatsApp.</p>
+</div>
+
+<!-- ─── ORDER LAYOUT ─── -->
+<div class="order-layout">
+
+    <!-- LEFT: ORDER FORM -->
+    <div class="form-panel">
+        <p class="panel-label">Your Details</p>
+
+        <!-- Product Selection -->
+        <div id="productStrips">
+            <!-- filled by JS -->
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Full Name *</label>
+            <input type="text" id="custName" class="field-input" placeholder="e.g. Chanda Mwale">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Phone Number (WhatsApp) *</label>
+            <input type="tel" id="custPhone" class="field-input" placeholder="+260 9X XXX XXXX">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Quantity</label>
+            <div class="fields-row">
+                <input type="number" id="custQty" class="field-input" placeholder="1" min="1" value="1">
+                <select id="custSize" class="field-input">
+                    <option value="">Select Size</option>
+                    <option>30ml</option>
+                    <option>50ml</option>
+                    <option>100ml</option>
+                    <option>6-Bottle Bundle</option>
+                    <option>Wholesale Pack</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Delivery / Pickup Toggle -->
+        <div class="field-group">
+            <label class="field-label">How would you like to receive your order? *</label>
+            <div class="delivery-toggle">
+                <label class="toggle-opt">
+                    <input type="radio" name="orderType" value="delivery" id="radioDelivery" onchange="toggleDelivery()">
+                    <div class="toggle-label">
+                        <span class="toggle-icon">🚚</span>
+                        <span class="toggle-title">Delivery</span>
+                        <span class="toggle-desc">We bring it to you</span>
+                    </div>
+                </label>
+                <label class="toggle-opt">
+                    <input type="radio" name="orderType" value="pickup" id="radioPickup" checked onchange="toggleDelivery()">
+                    <div class="toggle-label">
+                        <span class="toggle-icon">🏪</span>
+                        <span class="toggle-title">Pick Up</span>
+                        <span class="toggle-desc">Kamwala Market</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Delivery Address (shown for delivery) -->
+        <div id="deliveryFields">
+            <div class="field-group">
+                <label class="field-label">Delivery Address *</label>
+                <input type="text" id="custAddress" class="field-input" placeholder="e.g. Plot 14, Chilenje South, Lusaka">
+            </div>
+            <div class="field-group">
+                <label class="field-label">Nearest Landmark</label>
+                <input type="text" id="custLandmark" class="field-input" placeholder="e.g. Near Chilenje Post Office">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Special Notes (optional)</label>
+            <textarea id="custNotes" class="field-input" rows="3" placeholder="Any special requests, gift wrapping, preferred time…" style="resize:vertical;"></textarea>
+        </div>
+
+        <button class="submit-btn" onclick="submitOrder()">
+            <span>✦ Submit Order</span>
+        </button>
+    </div>
+
+    <!-- RIGHT: WHATSAPP + HOW IT WORKS -->
+    <div class="info-panel">
+        <p class="panel-label">Chat With Us</p>
+
+        <!-- WhatsApp Block -->
+        <div class="wa-block">
+            <p class="wa-title">Direct Line · WhatsApp</p>
+            <h3 class="wa-heading">Ask About Delivery</h3>
+            <p class="wa-sub">Not sure about delivery to your area? Chat with us directly on WhatsApp — we'll confirm timing, fees, and availability in minutes.</p>
+            <div class="wa-number">+260 974 333 332</div>
+            <a href="https://wa.me/260974333332?text=Hi%20Al%20Reef!%20I%20have%20a%20question%20about%20delivery." target="_blank" class="wa-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.559 4.14 1.535 5.876L0 24l6.31-1.507A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818c-1.95 0-3.77-.527-5.33-1.44l-.38-.228-3.745.895.935-3.635-.25-.39A9.826 9.826 0 012.182 12C2.182 6.59 6.59 2.182 12 2.182S21.818 6.59 21.818 12 17.41 21.818 12 21.818z"/></svg>
+                Chat on WhatsApp
+            </a>
+        </div>
+
+        <!-- Live Chat Preview -->
+        <p class="panel-label">Live Chat Preview</p>
+        <div class="chat-preview">
+            <div class="chat-header">
+                <div class="chat-avatar">AR</div>
+                <div class="chat-meta">
+                    <div class="chat-name">Al Reef Enterprise</div>
+                    <div class="chat-status">● Online Now</div>
+                </div>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-msg them">
+                    Assalamu Alaikum! 👋 Welcome to Al Reef. Are you ordering for delivery or pick up?
+                    <span class="msg-time">Just now</span>
+                </div>
+                <div class="chat-msg us">
+                    Hi! I'd like delivery to Chilenje South please.
+                    <span class="msg-time">Just now</span>
+                </div>
+                <div class="chat-msg them">
+                    We deliver to Chilenje! 🚚 Delivery fee is K30. Would you like to confirm your address?
+                    <span class="msg-time">Just now</span>
+                </div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" class="chat-type-input" id="chatInput" placeholder="Type a question…" onkeypress="if(event.key==='Enter') sendChatMsg()">
+                <button class="chat-send-btn" onclick="sendChatMsg()">➤</button>
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <p class="panel-label" style="margin-top:8px;">How It Works</p>
+        <div class="how-steps">
+            <div class="step">
+                <span class="step-num">01</span>
+                <div class="step-info">
+                    <p class="step-title">Fill the Form</p>
+                    <p class="step-desc">Enter your name, number, choose your perfume and whether you want delivery or pick up.</p>
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-num">02</span>
+                <div class="step-info">
+                    <p class="step-title">We Confirm via WhatsApp</p>
+                    <p class="step-desc">Our team will message you on WhatsApp within minutes to confirm your order details and payment.</p>
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-num">03</span>
+                <div class="step-info">
+                    <p class="step-title">Receive or Pick Up</p>
+                    <p class="step-desc">For delivery, we'll bring it to your door. For pick up, come to Kamwala Market at your convenience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── ADMIN BANNER ─── -->
+<div style="background:var(--dark-2);border-top:1px solid rgba(201,168,76,0.12);border-bottom:1px solid rgba(201,168,76,0.12);padding:28px 8%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div>
+        <p style="font-family:'Didact Gothic',sans-serif;font-size:0.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">For Admin Staff</p>
+        <p style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;">View all incoming delivery &amp; pick-up orders</p>
+    </div>
+    <a href="admin.html" style="font-family:'Didact Gothic',sans-serif;font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;padding:16px 32px;background:var(--gold);color:var(--black);font-weight:700;text-decoration:none;transition:background 0.3s;" onmouseover="this.style.background='#e8c97a'" onmouseout="this.style.background='var(--gold)'">Open Admin Portal →</a>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+    <div class="footer-brand">Al Reef Enterprise</div>
+    <ul class="footer-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="home.html#collection">Collection</a></li>
+        <li><a href="#">Order</a></li>
+        <li><a href="home.html#contact">Contact</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Al Reef Enterprise Kamwala · All Rights Reserved</p>
+</footer>
+
+<!-- ─── SUCCESS MODAL ─── -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-box">
+        <div class="modal-icon">✦</div>
+        <h3 class="modal-title">Order <em>Received</em></h3>
+        <p class="modal-text" id="modalText">Your order has been logged. We'll confirm via WhatsApp shortly.</p>
+        <p class="modal-ref" id="modalRef">REF: AR-0001</p>
+        <div class="modal-actions">
+            <a href="#" class="modal-wa" id="modalWaLink" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.559 4.14 1.535 5.876L0 24l6.31-1.507A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818c-1.95 0-3.77-.527-5.33-1.44l-.38-.228-3.745.895.935-3.635-.25-.39A9.826 9.826 0 012.182 12C2.182 6.59 6.59 2.182 12 2.182S21.818 6.59 21.818 12 17.41 21.818 12 21.818z"/></svg>
+                Confirm on WhatsApp
+            </a>
+            <div class="modal-close" onclick="closeModal()">Close</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ─── CURSOR ───
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => {
+        mx=e.clientX; my=e.clientY;
+        dot.style.left=mx-3+'px'; dot.style.top=my-3+'px';
+    });
+    (function animRing(){
+        rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+        ring.style.left=rx-15+'px'; ring.style.top=ry-15+'px';
+        requestAnimationFrame(animRing);
+    })();
+
+    // ─── PRODUCTS ───
+    const PRODUCTS = [
+        { id:'p1', name:'Lattafa Collection', cat:'Arabic Perfume', price:'K327', img:'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=100' },
+        { id:'p2', name:'Confetti Perfumes', cat:'Cosmetics Line', price:'K210', img:'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=100' },
+        { id:'p3', name:'Wholesale Pack', cat:'Bulk Retail', price:'K1,012', img:'https://images.unsplash.com/photo-1615033533054-e03a9732c484?auto=format&fit=crop&q=80&w=100' },
+        { id:'p4', name:'Arabic Musk', cat:'Premium Import', price:'Ask', img:'https://images.unsplash.com/photo-1563170351-be82bc888bb4?auto=format&fit=crop&q=80&w=100' },
+        { id:'p5', name:'Oud Royal', cat:'Signature Scent', price:'K189', img:'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=100' },
+        { id:'p6', name:'Rose & Amber', cat:'For Her', price:'K165', img:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=100' },
+    ];
+
+    let selectedProduct = null;
+
+    const strips = document.getElementById('productStrips');
+    const label = document.createElement('label');
+    label.className = 'field-label';
+    label.textContent = 'Select Product *';
+    label.style.display = 'block';
+    label.style.marginBottom = '12px';
+    strips.appendChild(label);
+
+    PRODUCTS.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product-select-strip';
+        div.id = 'strip-'+p.id;
+        div.innerHTML = `
+            <img src="${p.img}" class="strip-img" alt="${p.name}">
+            <div class="strip-info">
+                <div class="strip-name">${p.name}</div>
+                <div class="strip-price">${p.price} · ${p.cat}</div>
+            </div>
+            <div class="strip-check" id="check-${p.id}">✓</div>
+        `;
+        div.onclick = () => {
+            document.querySelectorAll('.product-select-strip').forEach(s => s.classList.remove('selected'));
+            div.classList.add('selected');
+            selectedProduct = p;
+        };
+        strips.appendChild(div);
+    });
+
+    // ─── DELIVERY TOGGLE ───
+    function toggleDelivery(){
+        const isDelivery = document.getElementById('radioDelivery').checked;
+        const df = document.getElementById('deliveryFields');
+        df.classList.toggle('show', isDelivery);
+    }
+
+    // ─── ORDERS STORE (localStorage) ───
+    const STORAGE_KEY = 'alreef_orders';
+    function loadOrders(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; }catch(e){return[];} }
+    function saveOrders(o){ localStorage.setItem(STORAGE_KEY, JSON.stringify(o)); }
+    function nextRef(){
+        const orders = loadOrders();
+        const max = orders.reduce((m,o)=>{ const n=parseInt(o.ref.replace('AR-',''))||0; return n>m?n:m; },0);
+        return 'AR-' + String(max+1).padStart(4,'0');
+    }
+
+    function submitOrder(){
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const qty = document.getElementById('custQty').value;
+        const size = document.getElementById('custSize').value;
+        const isDelivery = document.getElementById('radioDelivery').checked;
+        const address = document.getElementById('custAddress').value.trim();
+        const notes = document.getElementById('custNotes').value.trim();
+
+        if(!name){ alert('Please enter your full name.'); return; }
+        if(!phone){ alert('Please enter your phone number.'); return; }
+        if(!selectedProduct){ alert('Please select a product.'); return; }
+        if(isDelivery && !address){ alert('Please enter your delivery address.'); return; }
+
+        const ref = nextRef();
+        const now = new Date();
+        const order = {
+            ref, name, phone, qty, size,
+            type: isDelivery ? 'delivery' : 'pickup',
+            product: selectedProduct,
+            address: isDelivery ? address : 'Kamwala Market (Pick Up)',
+            landmark: isDelivery ? document.getElementById('custLandmark').value.trim() : '',
+            notes,
+            date: now.toLocaleDateString('en-GB'),
+            time: now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
+            done: false
+        };
+
+        const orders = loadOrders();
+        orders.push(order);
+        saveOrders(orders);
+
+        // WhatsApp message
+        let wMsg = `Hi Al Reef! I'd like to place an order.\n\n`;
+        wMsg += `*Ref:* ${ref}\n*Name:* ${name}\n*Phone:* ${phone}\n`;
+        wMsg += `*Product:* ${selectedProduct.name} (${selectedProduct.price})\n`;
+        wMsg += `*Qty:* ${qty}${size ? ' — '+size : ''}\n`;
+        wMsg += `*Type:* ${isDelivery ? '🚚 Delivery' : '🏪 Pick Up'}\n`;
+        if(isDelivery) wMsg += `*Address:* ${address}\n`;
+        if(notes) wMsg += `*Notes:* ${notes}\n`;
+        wMsg += `\nPlease confirm availability and payment. Thank you!`;
+
+        const waLink = `https://wa.me/260974333332?text=${encodeURIComponent(wMsg)}`;
+
+        document.getElementById('modalText').textContent =
+            `Thanks ${name}! Your ${isDelivery?'delivery':'pick-up'} order has been saved. Confirm on WhatsApp to lock it in — the admin team can also see it in the portal.`;
+        document.getElementById('modalRef').textContent = 'REF: ' + ref;
+        document.getElementById('modalWaLink').href = waLink;
+        document.getElementById('successModal').classList.add('show');
+
+        // Reset form
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        document.getElementById('custQty').value = '1';
+        document.getElementById('custSize').value = '';
+        document.getElementById('custAddress').value = '';
+        document.getElementById('custLandmark').value = '';
+        document.getElementById('custNotes').value = '';
+        document.querySelectorAll('.product-select-strip').forEach(s => s.classList.remove('selected'));
+        selectedProduct = null;
+    }
+
+    function closeModal(){
+        document.getElementById('successModal').classList.remove('show');
+    }
+    document.getElementById('successModal').addEventListener('click', function(e){
+        if(e.target === this) closeModal();
+    });
+
+    // ─── SIMPLE CHAT SIMULATION ───
+    const chatResponses = {
+        'delivery': 'We deliver across Lusaka! 🚚 Delivery fee is K30–K50 depending on your location. Same day if you order before 3pm.',
+        'pickup': 'Pick up is available any day Mon–Sat at our Kamwala Market stall. Come anytime between 8am and 6pm. 🏪',
+        'price': 'Our prices start from K165 per bottle. Bulk deals of 6 bottles from K327. WhatsApp us for the full price list!',
+        'stock': 'We have 100+ scents in stock right now — Lattafa, Confetti, Arabic Musk, Oud Royal, Rose & Amber, and more. 🧴',
+        'pay': 'We accept cash, Airtel Money, and MTN Money. Payment on delivery for Lusaka orders!',
+        'location': 'We are at Kamwala Market, Lusaka. Look for the Al Reef stall — or WhatsApp us for directions! 📍',
+        'wholesale': 'Yes! We offer wholesale for retailers. Minimum 6 bottles per order. WhatsApp +260 974 333 332 for the wholesale price list. 📋',
+        'lattafa': 'Lattafa is our best seller! Rich oud, musk, and amber notes. Starting from K327 for a 6-bottle deal. ✨',
+        'hours': 'We are open Monday to Saturday, 8am to 6pm. WhatsApp us anytime for after-hours orders! ⏰',
+        'default': 'Thanks for your message! For the fastest reply, WhatsApp us at +260 974 333 332 — we respond within minutes. 😊'
+    };
+
+    function sendChatMsg(){
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if(!text) return;
+        const chatBody = document.getElementById('chatBody');
+
+        // User message
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-msg us';
+        userMsg.innerHTML = `${text}<span class="msg-time">Just now</span>`;
+        chatBody.appendChild(userMsg);
+        input.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // Bot response
+        const lower = text.toLowerCase();
+        let response = chatResponses.default;
+        for(const [key, val] of Object.entries(chatResponses)){
+            if(lower.includes(key)){ response = val; break; }
+        }
+        setTimeout(()=>{
+            const botMsg = document.createElement('div');
+            botMsg.className = 'chat-msg them';
+            botMsg.innerHTML = `${response}<span class="msg-time">Just now</span>`;
+            chatBody.appendChild(botMsg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }, 700);
+    }
+
+    document.getElementById('chatInput').addEventListener('keypress', e => {
+        if(e.key === 'Enter') sendChatMsg();
+    });
+</script>
+</body>
+</html>
