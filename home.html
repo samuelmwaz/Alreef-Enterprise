@@ -367,6 +367,56 @@
             margin: 24px auto 0;
         }
 
+        /* ─── SEARCH BAR ─── */
+        .search-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 -20px;
+        }
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+        }
+        .search-box input {
+            width: 100%;
+            background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,0.35);
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            padding: 16px 50px 16px 22px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-box input::placeholder {
+            color: rgba(245,240,232,0.3);
+            font-style: italic;
+        }
+        .search-box input:focus {
+            border-color: var(--gold);
+        }
+        .search-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        .search-no-result {
+            display: none;
+            text-align: center;
+            width: 100%;
+            padding: 60px 20px;
+            color: var(--white-dim);
+            font-size: 1.1rem;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
         /* ─── PRODUCT GRID ─── */
         .products-bg { background: var(--dark-3); }
 
@@ -684,49 +734,6 @@
             transition: width 0.1s;
         }
 
-        /* ─── HAMBURGER MENU ─── */
-        .nav-hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 4px;
-            z-index: 1001;
-        }
-        .nav-hamburger span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--gold);
-            transition: all 0.3s ease;
-        }
-        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(5,5,5,0.97);
-            z-index: 999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 36px;
-        }
-        .mobile-menu.open { display: flex; }
-        .mobile-menu a {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-            letter-spacing: 4px;
-            transition: color 0.3s;
-        }
-        .mobile-menu a:hover { color: var(--gold); }
-
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .hero-visual { display: none; }
@@ -735,37 +742,7 @@
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .wholesale-cta { flex-direction: column; }
             .nav-links { display: none; }
-            .nav-hamburger { display: flex; }
             .info-bar { gap: 30px; }
-        }
-
-        @media (max-width: 480px) {
-            nav { padding: 18px 5%; }
-
-            .hero-content { padding: 0 5%; max-width: 100%; }
-            .hero-title { font-size: clamp(2.8rem, 13vw, 4rem); }
-            .hero-sub { font-size: 1rem; margin: 16px 0 30px; }
-            .hero-cta { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .btn-primary { padding: 16px 32px; }
-
-            .section { padding: 60px 5%; }
-            .section-header { margin-bottom: 40px; }
-
-            .info-bar { padding: 20px 5%; gap: 20px; }
-            .info-item { width: 100%; }
-
-            .product-grid { grid-template-columns: 1fr; }
-            .product-footer { flex-direction: column; align-items: flex-start; gap: 14px; }
-            .btn-order { white-space: normal; width: 100%; text-align: center; }
-
-            .featured-left { padding: 50px 5%; }
-            .featured-stats { gap: 20px; flex-wrap: wrap; }
-
-            .wholesale-cta { padding: 50px 5%; }
-            .wholesale-right { width: 100%; min-width: unset; }
-
-            footer { padding: 50px 5% 24px; }
-            .footer-grid { gap: 30px; }
         }
     </style>
 </head>
@@ -789,23 +766,15 @@
         <li><a href="#collection">Collection</a></li>
         <li><a href="#wholesale">Wholesale</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a href="admin.html ">admin</a></li>
+        <li><a href="admin portal.html ">admin</a></li>
          <li><a href="shop.html"> special</a></li>
-    </ul>
-    <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-    </div>
-</nav>
+         <li><a href="admin.html">delivary and pick up portal</a></li>
+         <li><a href="order.html"> order</a></li>
 
-<!-- Mobile Menu Overlay -->
-<div class="mobile-menu" id="mobileMenu">
-    <a href="#home" onclick="closeMenu()">Home</a>
-    <a href="#collection" onclick="closeMenu()">Collection</a>
-    <a href="#wholesale" onclick="closeMenu()">Wholesale</a>
-    <a href="#contact" onclick="closeMenu()">Contact</a>
-    <a href="admin.html" onclick="closeMenu()">Admin</a>
-    <a href="shop.html" onclick="closeMenu()">Special</a>
-</div>
+
+
+    </ul>
+</nav>
 
 <!-- ── HERO ── -->
 <section class="hero" id="home">
@@ -882,7 +851,15 @@
         <h2 class="section-title">Featured <em>Collection</em></h2>
         <div class="section-divider"></div>
     </div>
-    <div class="product-grid" id="productGrid"></div>
+    <div class="search-wrap">
+        <div class="search-box">
+            <input type="text" id="perfumeSearch" placeholder="Search for a perfume…" autocomplete="off">
+            <span class="search-icon">✦</span>
+        </div>
+    </div>
+    <div class="product-grid" id="productGrid">
+        <p class="search-no-result" id="noResult">No perfumes found matching your search.</p>
+    </div>
 </section>
 
 <!-- ── FEATURED BANNER ── -->
@@ -979,18 +956,6 @@
 </footer>
 
 <script>
-    // ─── Mobile Menu ───
-    function toggleMenu() {
-        document.getElementById('hamburger').classList.toggle('open');
-        document.getElementById('mobileMenu').classList.toggle('open');
-        document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
-    }
-    function closeMenu() {
-        document.getElementById('hamburger').classList.remove('open');
-        document.getElementById('mobileMenu').classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
     // ─── Cursor ───
     const dot = document.getElementById('cursorDot');
     const ring = document.getElementById('cursorRing');
@@ -1118,6 +1083,27 @@
             </div>
         `;
         grid.appendChild(card);
+    });
+
+    // ─── Search ───
+    const searchInput = document.getElementById('perfumeSearch');
+    const noResult = document.getElementById('noResult');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+        const cards = grid.querySelectorAll('.product-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const name = card.querySelector('.product-name').textContent.toLowerCase();
+            const cat = card.querySelector('.product-cat').textContent.toLowerCase();
+            const note = card.querySelector('.product-note').textContent.toLowerCase();
+            const match = !query || name.includes(query) || cat.includes(query) || note.includes(query);
+            card.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        noResult.style.display = visible === 0 ? 'block' : 'none';
     });
 </script>
 </body>
